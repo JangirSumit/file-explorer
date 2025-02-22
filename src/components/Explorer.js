@@ -1,4 +1,4 @@
-import { useContext, memo, useState, useCallback, useRef } from "react";
+import { useContext } from "react";
 import { DirectoryContext } from "../contexts/DirectoryContext";
 import DirectoryExplorer from "./DirectoryExplorer";
 
