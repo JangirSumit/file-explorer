@@ -12,7 +12,11 @@ const File = memo(({ root, rootKey, name }) => {
     navigator.clipboard.writeText(path);
   };
   return (
-    <div className="file" key={`${rootKey}/${root.name}/${name}`}>
+    <div
+      className="file"
+      key={`${rootKey}/${root.name}/${name}`}
+      style={{ paddingLeft: "30px" }}
+    >
       {ICONS.File} {name}
       <span
         title="Copy path"
@@ -25,7 +29,7 @@ const File = memo(({ root, rootKey, name }) => {
   );
 });
 
-const Directory = ({ root, rootKey }) => {
+const Directory = ({ root, rootKey, onExpandCollapse, isExpanded }) => {
   const { state, dispatch } = useContext(DirectoryContext);
   const [showAddFile, setShowAddFile] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -37,11 +41,7 @@ const Directory = ({ root, rootKey }) => {
   const directoryRef = useRef(null);
 
   const isDuplicateName = (name) => {
-    return root?.data?.some((d) => d.name == fileName);
-  };
-
-  const onExpandCollapse = () => {
-    console.log(root, root.data);
+    return root?.data?.some((d) => d.name == name);
   };
 
   const onFileAdd = () => {
@@ -109,7 +109,7 @@ const Directory = ({ root, rootKey }) => {
       return;
     }
 
-    if (isDuplicateName(fileName)) {
+    if (isDuplicateName(directoryName)) {
       setIsAdding(false);
       setError("File or directory already exists with same name");
       return;
@@ -136,8 +136,11 @@ const Directory = ({ root, rootKey }) => {
 
   return (
     <div className="directory">
-      <span style={{ cursor: "pointer" }} onClick={onExpandCollapse}>
-        {ICONS.Expanded}
+      <span
+        style={{ cursor: "pointer", marginRight: "5px" }}
+        onClick={onExpandCollapse}
+      >
+        {isExpanded ? ICONS.Expanded : ICONS.Collapsed}
       </span>
       <span>
         {ICONS.Directory} {root.name}{" "}
@@ -194,15 +197,25 @@ const Directory = ({ root, rootKey }) => {
 };
 
 const DirectoryExplorer = ({ root, rootKey = "", spacer = 0 }) => {
-  //console.log(rootKey, root);
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  const onExpandCollapse = () => {
+    setIsExpanded((prevState) => !prevState);
+  };
 
   return (
     <div
       style={{ paddingLeft: `${spacer}px` }}
       className={root == "" ? "directory-explorer-root" : "directory-explorer"}
     >
-      <Directory root={root} rootKey={rootKey} />
+      <Directory
+        root={root}
+        rootKey={rootKey}
+        isExpanded={isExpanded}
+        onExpandCollapse={onExpandCollapse}
+      />
       {root.data &&
+        isExpanded &&
         root.data.map((d) => {
           if (d.type == "File") {
             return (
@@ -223,7 +236,7 @@ const DirectoryExplorer = ({ root, rootKey = "", spacer = 0 }) => {
                 key={rootKey ? `${rootKey}/${root.name}` : `${root.name}`}
                 rootKey={rootKey ? `${rootKey}/${root.name}` : `${root.name}`}
                 root={d}
-                spacer={spacer + 10}
+                spacer={spacer + 20}
               />
             );
           }
