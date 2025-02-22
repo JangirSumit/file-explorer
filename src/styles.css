@@ -1,0 +1,28 @@
+.App {
+  font-family: sans-serif;
+  text-align: left;
+}
+
+.directory,
+.file {
+  padding: 0 10px;
+  margin-bottom: 5px;
+}
+
+.icon-span {
+  cursor: pointer;
+  padding-left: 10px;
+}
+
+.margin-left-10 {
+  margin-left: 10px;
+}
+
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+.error {
+  color: red;
+  margin-left: 25px;
+}
